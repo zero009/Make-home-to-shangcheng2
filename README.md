@@ -64,7 +64,8 @@
             
      IV、iframe 跨域 <br/>
             
-            img.src : 这个标签专门解析图片 、link.href 专门解析css样式 、script.src 专门解析js代码 <br/>
+             img.src : 这个标签专门解析图片 、link.href 专门解析css样式 、script.src 专门解析js代码 <br/>
+	     
     
      V、JSONP跨域：是JSON with padding （填充式JSON或参数式JSON），由回调函数和数据组成。【只能用get方式请求】把请求的JSON数据已回调函数的方式填充到函数参数中传输数据，实现跨域。<br/>
       
@@ -75,3 +76,23 @@
             var script = document.creatElement（'script'）;
             script.src = "http://free.net/json/?callback = fn";
             document.body.insertBefore( script , document.body.firstChild );
+
+3、首页楼层图片采用了懒加载
+   
+   首先把 img 标签上自定义一个 _src 把地址赋上，当用户滑动滚动条时，再获取该自定义属性的值赋给 src
+	  
+   *滑动滚动条显示导航图片延迟加载
+	    
+	    window.onscroll = window.onresize = function(){ 	       
+	      var iH = window.innerHeight || document.documentElement.clientHeight;
+	      var iScroll = window.pageYOffset || document.documentElement.scrollTop;
+	      var iB = iH + iScroll;
+	      for(var i=0;i<imgL;i++){
+		  var aImgPos = getPos(imgW[i]).t;
+		  if(aImgPos < iB){
+		    if(imgW[i].getAttribute('_src',2)){
+		       imgW[i].src = imgW[i].getAttribute('_src'); 
+		       imgW[i].removeAttribute('_src');
+		    }
+		  }
+	      };
