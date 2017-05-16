@@ -76,12 +76,18 @@
             var script = document.creatElement（'script'）;
             script.src = "http://free.net/json/?callback = fn";
             document.body.insertBefore( script , document.body.firstChild );
+     
+     VI、使用HTML5中新引进的 window.postMessage 方法来跨域传送数据
+        
+	window.postMessage(message,targetOrigin) 调用postMessage方法的window对象是指要接收消息的那一个window对象，该方法的第一个参数message为要发送的消息，类型只能为字符串；第二个参数targetOrigin用来限定接收消息的那个window对象所在的域，如果不想限定域，可以使用通配符 *  。要接收消息的window对象，可是通过监听自身的message事件来获取传过来的消息，消息内容储存在该事件对象的data属性中。
+	
+3、首页楼层图片采用了延迟加载<br/>
 
-3、首页楼层图片采用了懒加载
+   页面可见区域以下的图片先不加载，等到用户向下滚动到图片位置时，再进行加载,当页面有好几屏内容时，有可能用户只看前几屏的内容，这样我们就可以只加载用户需要看的图片，减少服务器向用户浏览器发送图片文件所产生的负荷。<br/>
    
-   首先把 img 标签上自定义一个 _src 把地址赋上，当用户滑动滚动条时，再获取该自定义属性的值赋给 src
+   首先把 img 标签上自定义一个 _src 把地址赋上，当用户滑动滚动条时，再获取该自定义属性的值赋给 src <br/>
 	  
-   *滑动滚动条显示导航图片延迟加载
+   滑动滚动条显示导航图片延迟加载
 	    
 	    window.onscroll = window.onresize = function(){ 	       
 	      var iH = window.innerHeight || document.documentElement.clientHeight;
@@ -96,3 +102,36 @@
 		    }
 		  }
 	      };
+
+4、定位楼层导航，跳转到相应位置,利用 window.scrollTo(x,y) 把内容滚动到指定坐标
+ 	  
+	if(this.index<(aLen-1)){
+	   var modH = $('.modF')[this.index].offsetTop;
+	   window.scrollTo(0,modH-100);
+	}else{
+	  window.scrollTo(0,0);
+	}
+	
+5、封装倒计时函数
+ 
+	 function downTime(){
+	     iNew = new Date('February 16,2016 23:02:00');
+	     var strT = ''; 
+	     for(var i=0;i<len;i++){
+		(function(i){
+		   var tim=setInterval(function(){
+		       iNow = new Date();
+		       var t = Math.floor((iNow - iNew)/1000);
+		       if(t>=0){//判断时间差是否已经到了零点
+			     var iD = Math.floor(t/86400);//天
+			     var iH = Math.floor(t%86400/3600);//时
+			     var iSec = Math.floor(t%86400%3600/60);//分
+			     var iM = Math.floor(t%60);//秒
+			     strT = '剩余'+iD+'天'+iH+'小时'+iSec+'分'+iM+ '秒';
+			     oP[i].innerHTML = strT;
+			}else{
+			  clearInterval(tim);
+			}
+		   },1000);
+		})(i); 
+	     }
